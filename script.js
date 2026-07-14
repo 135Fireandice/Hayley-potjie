@@ -1,11 +1,8 @@
-/* ============ MOBILE DETECTION ============ */
-const isMobile = window.matchMedia("(max-width: 820px)").matches || 'ontouchstart' in window;
-
 /* ============ SECTION-AWARE BOW SYSTEM ============ */
 // Each section has its own bow personality
 const BOW_SCENES = {
 hero: {
-emojis: ['🎀','🎀','🎀','🎀','🎀','🎀','🎀','🎀','💝','🎀','✨','💎'],
+emojis: ['🎀','🎀','','🎀','🎀','','🎀','🎀','','🎀','✨','💎'],
 count: [70, 55, 32],   // [back, mid, fore]
 minSize: [10, 22, 40],
 maxSize: [20, 40, 70],
@@ -16,7 +13,7 @@ anims:   ['bowA','bowB','bowC'],
 filter:  'hue-rotate(0deg)',
 },
 details: {
-emojis: ['🎀','🎀','🎀','💛','🎀','🎀','🎁','🎀','✨','💎'],
+emojis: ['','🎀','🎀','','🎀','🎀','','🎀','✨','💎'],
 count: [55, 45, 28],
 minSize: [10, 20, 35],
 maxSize: [18, 36, 58],
@@ -27,7 +24,7 @@ anims:   ['bowB','bowA','bowC'],
 filter:  'hue-rotate(30deg) saturate(1.2)',
 },
 bring: {
-emojis: ['🎀','🎀','🎀','🧥','❄️','🎀','🎀','🍃','🎀','✨'],
+emojis: ['🎀','','🎀','🧥','️','🎀','🎀','🍃','🎀','✨'],
 count: [60, 48, 24],
 minSize: [10, 20, 36],
 maxSize: [20, 38, 62],
@@ -38,7 +35,7 @@ anims:   ['bowC','bowA','bowB'],
 filter:  'hue-rotate(150deg) saturate(1.3)',  // shift toward mint/teal
 },
 rsvp: {
-emojis: ['🎀','🎀','🖤','🎀','🎀','✨','🎀','🎀','💎','💫'],
+emojis: ['🎀','','🖤','🎀','','✨','🎀','','💎','💫'],
 count: [60, 46, 22],
 minSize: [8, 18, 32],
 maxSize: [18, 34, 55],
@@ -49,7 +46,7 @@ anims:   ['bowA','bowC','bowB'],
 filter:  'hue-rotate(300deg) saturate(0.8) brightness(1.4)',  // gold/cream shift
 },
 ticket: {
-emojis: ['🎀','🎟️','🎀','🎉','🎀','🎀','💚','🎀','🎊','🎀','✨','💎','💫'],
+emojis: ['🎀','🎟️','🎀','🎉','🎀','🎀','💚','🎀','🎊','🎀','✨','','💫'],
 count: [80, 60, 36],
 minSize: [10, 22, 42],
 maxSize: [22, 42, 75],
@@ -60,36 +57,23 @@ anims:   ['bowC','bowB','bowA'],
 filter:  'hue-rotate(120deg) saturate(1.5)',  // vivid green celebration
 },
 };
-
-// Drastically reduce bow counts on mobile to save GPU
-if (isMobile) {
-    for (let key in BOW_SCENES) {
-        BOW_SCENES[key].count = BOW_SCENES[key].count.map(c => Math.max(5, Math.floor(c / 4)));
-    }
-}
-
 const bowBg = document.getElementById('bowBackground');
 let currentScene = null;
 let bowNodes = [];
-
 /* ============ AMBIENT GLITTER LAYER ============ */
 const sparkleLayer = document.createElement('div');
 sparkleLayer.className = 'sparkle-layer';
 document.body.appendChild(sparkleLayer);
-
-const sparkleCount = isMobile ? 20 : 60;
-for (let i = 0; i < sparkleCount; i++) {
+for (let i = 0; i < 60; i++) {
 const s = document.createElement('span');
 const size = 3 + Math.random() * 5;
 s.style.cssText = `width:${size}px;height:${size}px; left:${Math.random() * 100}%; top:${Math.random() * 100}%; animation-duration:${2 + Math.random() * 3}s; animation-delay:-${Math.random() * 5}s;`;
 sparkleLayer.appendChild(s);
 }
-
 // CSS animations injected once
 const styleEl = document.createElement('style');
 styleEl.textContent = `@keyframes bowA { 0%,100% { transform: translate(0,0) rotate(0deg) scale(1); } 33% { transform: translate(14px,-18px) rotate(18deg) scale(1.06); } 66% { transform: translate(-10px,16px) rotate(-10deg) scale(0.94); } } @keyframes bowB { 0%,100% { transform: translate(0,0) rotate(0deg); } 25% { transform: translate(-22px,12px) rotate(-22deg); } 75% { transform: translate(18px,-14px) rotate(14deg); } } @keyframes bowC { 0%,100% { transform: translate(0,0) scale(1) rotate(0deg); } 50% { transform: translate(12px,24px) scale(1.12) rotate(28deg); } } .bow-background { transition: filter 1.2s ease; } .bow-layer-bow { position:absolute; line-height:1; user-select:none; pointer-events:none; will-change:transform; transition: opacity 0.8s ease; }`;
 document.head.appendChild(styleEl);
-
 function buildScene(scene) {
 if (currentScene === scene) return;
 currentScene = scene;
@@ -102,10 +86,6 @@ bowBg.innerHTML = '';
 bowNodes = [];
 // Set filter on container for colour shift
  bowBg.style.filter = cfg.filter;
- 
- // Remove drop-shadow on mobile (massive GPU saver)
- const shadow = isMobile ? '' : 'filter: drop-shadow(0 2px 4px rgba(0,0,0,0.07));';
- 
  // Build 3 layers
  [0, 1, 2].forEach(layerIdx => {
    const count   = cfg.count[layerIdx];
@@ -130,7 +110,7 @@ bowNodes = [];
        transform: rotate(${Math.random() * 360}deg);
        animation: ${anim} ${dur}s ease-in-out infinite;
        animation-delay: -${Math.random() * dur}s;
-       ${shadow}
+       filter: drop-shadow(0 2px 4px rgba(0,0,0,0.07));
        z-index: ${layerIdx};
      `;
      bowBg.appendChild(el);
@@ -141,7 +121,6 @@ bowNodes = [];
  });
 }, 400); // wait for fade-out
 }
-
 // Observe each section and switch scenes
 const sections = [
 { id: 'hero',         scene: 'hero'    },
@@ -164,7 +143,6 @@ if (el) sectionObserver.observe(el);
 });
 // Start with hero
 buildScene('hero');
-
 /* ============ CUSTOM CURSOR ============ */
 const dot  = document.getElementById('cursorDot');
 const ring = document.getElementById('cursorRing');
@@ -174,7 +152,7 @@ mx=e.clientX;my=e.clientY;
 dot.style.transform=`translate(${mx}px,${my}px) translate(-50%,-50%)`;
 });
 function animateRing(){
-rx+=(mx-rx)*.15;ry+=(my-ry)*.15; // Fixed syntax error here
+rx+=(mx-rx)*.15;ry+=(my-ry)*.15;
 ring.style.transform=`translate(${rx}px,${ry}px) translate(-50%,-50%)`;
 requestAnimationFrame(animateRing);
 }
@@ -183,7 +161,6 @@ document.querySelectorAll('a,button,input,textarea,li,.card,.fee-btn').forEach(e
 el.addEventListener('mouseenter',()=>ring.classList.add('hover'));
 el.addEventListener('mouseleave',()=>ring.classList.remove('hover'));
 });
-
 /* ============ COUNTDOWN ============ */
 const cdD=document.getElementById('cdD'),cdH=document.getElementById('cdH');
 const cdM=document.getElementById('cdM'),cdS=document.getElementById('cdS');
@@ -198,7 +175,6 @@ cdM.textContent=String(min).padStart(2,'0');
 cdS.textContent=String(sec).padStart(2,'0');
 }
 tick();setInterval(tick,1000);
-
 /* ============ 3D TILT CARDS ============ */
 document.querySelectorAll('[data-tilt]').forEach(card=>{
 card.addEventListener('mousemove',e=>{
@@ -209,7 +185,6 @@ card.style.transform=`translateY(-6px) rotateX(${-y*10}deg) rotateY(${x*10}deg)`
 });
 card.addEventListener('mouseleave',()=>card.style.transform='');
 });
-
 /* ============ SCROLL REVEAL ============ */
 const io=new IntersectionObserver(entries=>{
 entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')});
@@ -217,13 +192,11 @@ entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')});
 document.querySelectorAll('.card,.section-title,.bring-list li,.rsvp-form').forEach(el=>{
 el.classList.add('reveal');io.observe(el);
 });
-
 /* ============ BRING LIST ============ */
 document.getElementById('bringList').addEventListener('click',e=>{
 const li=e.target.closest('li');
-if(li){li.classList.toggle('done');toast(li.classList.contains('done')?'Added! 🎉':'Removed')}
+if(li){li.classList.toggle('done');toast(li.classList.contains('done')?'Added! ':'Removed')}
 });
-
 /* ============ ENTRANCE FEE PICKER ============ */
 const MAX = 8;
 function loadCounts(){
@@ -247,7 +220,6 @@ const sweetsBarEl   = document.getElementById('sweetsBar');
 const feeSelectedEl = document.getElementById('feeSelected');
 const feeSelectedTxt= document.getElementById('feeSelectedText');
 const feeClearBtn   = document.getElementById('feeClear');
-
 function updateFeeUI(){
 chipsCountEl.textContent  =  `${counts.chips} / ${MAX}` ;
 sweetsCountEl.textContent =  `${counts.sweets} / ${MAX}` ;
@@ -255,13 +227,13 @@ chipsBarEl.style.width  =  `${(counts.chips / MAX) * 100}%` ;
 sweetsBarEl.style.width =  `${(counts.sweets / MAX) * 100}%` ;
 feeChipsBtn.classList.toggle('full',  counts.chips   >= MAX);
 feeSweetsBtn.classList.toggle('full', counts.sweets  >= MAX);
-feeChipsBtn.disabled  = counts.chips   >= MAX  && userChoice !== 'chips'; // Fixed & & syntax error
-feeSweetsBtn.disabled = counts.sweets  >= MAX  && userChoice !== 'sweets'; // Fixed & & syntax error
+feeChipsBtn.disabled  = counts.chips   >= MAX && userChoice !== 'chips';
+feeSweetsBtn.disabled = counts.sweets  >= MAX && userChoice !== 'sweets';
 feeChipsBtn.classList.toggle('selected',  userChoice === 'chips');
 feeSweetsBtn.classList.toggle('selected', userChoice === 'sweets');
 if(userChoice){
-feeSelectedEl.classList.remove('hidden'); // Fixed typo
-const emoji = userChoice === 'chips' ? '🍟' : '🍬';
+feeSelectedEl.classList.remove('hidden');
+const emoji = userChoice === 'chips' ? '' : '🍬';
 feeSelectedTxt.textContent =  `You're bringing: ${emoji} ${userChoice.charAt(0).toUpperCase()+userChoice.slice(1)}` ;
 } else {
 feeSelectedEl.classList.add('hidden');
@@ -273,7 +245,7 @@ if(userChoice){
 counts[userChoice] = Math.max(0, counts[userChoice] - 1);
 }
 if(counts[type] >= MAX){
-toast(`Oops! ${type === 'chips' ? '🍟 Chips' : '🍬 Sweets'} is full — choose the other one!`);
+toast(`Oops! ${type === 'chips' ? ' Chips' : '🍬 Sweets'} is full — choose the other one!`);
 return;
 }
 userChoice = type;
@@ -289,13 +261,12 @@ counts[userChoice] = Math.max(0, counts[userChoice] - 1);
 saveCounts(counts);
 userChoice = null;
 updateFeeUI();
-toast('No worries, pick again 👆');
+toast('No worries, pick again ');
 }
 feeChipsBtn.addEventListener('click', () => pickFee('chips'));
 feeSweetsBtn.addEventListener('click', () => pickFee('sweets'));
 feeClearBtn.addEventListener('click', clearFee);
 updateFeeUI();
-
 /* ============ RSVP FORM ============ */
 const form     = document.getElementById('rsvpForm');
 const rsvpName = document.getElementById('rsvpName');
@@ -323,7 +294,6 @@ setTimeout(()=>document.getElementById('ticketSection').scrollIntoView({behavior
 confetti();
 toast(`You're in! 🎉 See you 25 July — don't forget the ${userChoice}!`);
 });
-
 /* ============ TOAST ============ */
 const toastEl=document.getElementById('toast');
 let toastT;
@@ -332,14 +302,11 @@ toastEl.textContent=msg;toastEl.classList.add('show');
 clearTimeout(toastT);
 toastT=setTimeout(()=>toastEl.classList.remove('show'),3000);
 }
-
 /* ============ CONFETTI (now with bows & bling) ============ */
 function confetti(){
 const colors=['#009b77','#c8b273','#e63946','#b2e1d6','#ded0ab'];
 const bling=['🎀','✨','💎','💫','🎉'];
-const cCount = isMobile ? 20 : 50; // Reduced on mobile
-const bCount = isMobile ? 10 : 24; // Reduced on mobile
-for(let i=0;i<cCount;i++){
+for(let i=0;i<50;i++){
 const c=document.createElement('div');
 c.className='confetti';
 c.style.left=Math.random()*100+'vw';
@@ -350,7 +317,7 @@ document.body.appendChild(c);
 setTimeout(()=>c.remove(),4500);
 }
 // Bedazzled pieces — bows, gems and sparkles fluttering down
-for(let i=0;i<bCount;i++){
+for(let i=0;i<24;i++){
 const b=document.createElement('div');
 b.className='confetti';
 b.style.left=Math.random()*100+'vw';
@@ -363,25 +330,20 @@ document.body.appendChild(b);
 setTimeout(()=>b.remove(),5000);
 }
 }
-
 /* ============ MOUSE SPARKLE TRAIL ============ */
-// Disabled on mobile to save battery and prevent touch lag
-if (!isMobile) {
-    let lastSparkleTime = 0;
-    window.addEventListener('mousemove', e => {
-        const now = Date.now();
-        if (now - lastSparkleTime < 90) return; // throttle
-        lastSparkleTime = now;
-        const s = document.createElement('div');
-        s.className = 'mouse-sparkle';
-        s.textContent = Math.random() > 0.5 ? '✨' : '🎀';
-        s.style.left = e.clientX + 'px';
-        s.style.top = e.clientY + 'px';
-        document.body.appendChild(s);
-        setTimeout(() => s.remove(), 900);
-    });
-}
-
+let lastSparkleTime = 0;
+window.addEventListener('mousemove', e => {
+const now = Date.now();
+if (now - lastSparkleTime < 90) return; // throttle
+lastSparkleTime = now;
+const s = document.createElement('div');
+s.className = 'mouse-sparkle';
+s.textContent = Math.random() > 0.5 ? '✨' : '🎀';
+s.style.left = e.clientX + 'px';
+s.style.top = e.clientY + 'px';
+document.body.appendChild(s);
+setTimeout(() => s.remove(), 900);
+});
 /* ============ EASTER EGGS ============ */
 const found=new Set();
 const panel=document.getElementById('secretPanel');
@@ -393,7 +355,7 @@ found.add(id);
 secretMsg.textContent=msg;
 secretCount.textContent=found.size;
 panel.classList.remove('hidden');
-if(found.size===15)setTimeout(()=>toast('🏆 ALL 15 SECRETS FOUND! You\'re a legend'),1500); // Fixed quote escape
+if(found.size===15)setTimeout(()=>toast('🏆 ALL 15 SECRETS FOUND! You\'re a legend'),1500);
 }
 const konami=['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
 let kIdx=0;
@@ -415,7 +377,7 @@ let dateClicks=0,dateTimer;
 document.getElementById('dateCard').addEventListener('click',()=>{
 dateClicks++;clearTimeout(dateTimer);
 dateTimer=setTimeout(()=>dateClicks=0,500);
-if(dateClicks===3){triggerEgg('date','Triple-clicked the date! 📆 It\'s real, we promise');dateClicks=0} // Fixed quote escape
+if(dateClicks===3){triggerEgg('date','Triple-clicked the date! 📆 It\'s real, we promise');dateClicks=0}
 });
 let bottomTimer;
 window.addEventListener('scroll',()=>{
@@ -440,7 +402,7 @@ let cdSeq=0;
 cdUnits.forEach((u,i)=>{
 u.style.cursor='none';
 u.addEventListener('click',()=>{
-if(i===cdSeq){cdSeq++;if(cdSeq===4){triggerEgg('countdown','⏱️ Countdown cracked! 1→2→3→4');cdSeq=0}}
+if(i===cdSeq){cdSeq++;if(cdSeq===4){triggerEgg('countdown','️ Countdown cracked! 1→2→3→4');cdSeq=0}}
 else cdSeq=0;
 });
 });
@@ -486,7 +448,7 @@ let bringClicks=0;
 document.querySelectorAll('#bringList li').forEach(li=>{
 li.addEventListener('click',()=>{
 bringClicks++;
-if(bringClicks===10)triggerEgg('bring','10 taps on the list! 🍽️ You\'re a natural party planner'); // Fixed quote escape
+if(bringClicks===10)triggerEgg('bring','10 taps on the list! 🍽️ You\'re a natural party planner');
 });
 });
 setTimeout(()=>toast('Welcome! 👀 15 secrets hidden — can you find them all?'),1500);
