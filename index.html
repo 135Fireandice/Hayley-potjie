@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>POTJIE '26 — You're Invited 🔥</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;700&family=Caveat:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- CUSTOM CURSOR -->
+<div class="cursor-dot" id="cursorDot"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- BOW BACKGROUND PATTERN -->
+<div class="bow-background" id="bowBackground"></div>
+
+<!-- CUSTOM NAV (no menu — info bar) -->
+<nav class="nav">
+  <div class="nav-logo" id="logo">POTJIE<span>'26</span></div>
+  <div class="nav-countdown" id="countdown">
+    <span class="cd-unit"><b id="cdD">00</b><small>DAYS</small></span>
+    <span class="cd-unit"><b id="cdH">00</b><small>HRS</small></span>
+    <span class="cd-unit"><b id="cdM">00</b><small>MIN</small></span>
+    <span class="cd-unit"><b id="cdS">00</b><small>SEC</small></span>
+  </div>
+  <div class="nav-badge">RSVP BY <b>21 JUL</b></div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <p class="hero-tag">YOU'RE OFFICIALLY INVITED 🎉</p>
+    <h1 class="hero-title">
+      <span class="title-line">THE FAMOUS</span>
+      <span class="title-line accent">POTJIE</span>
+      <span class="title-line">PARTY</span>
+    </h1>
+    <p class="hero-sub">25 July · 13:00 · Bring your vibes</p>
+    <a href="#rsvp" class="btn btn-primary">RSVP NOW →</a>
+  </div>
+</section>
+
+<!-- DETAILS -->
+<section class="details" id="details">
+  <h2 class="section-title">THE <span class="accent">DEETS</span></h2>
+  <div class="cards">
+    <div class="card tilt" data-tilt>
+      <div class="card-icon">📅</div>
+      <h3 id="dateCard">25 JULY 2026</h3>
+      <p>Thursday · Save the date</p>
+    </div>
+    <div class="card tilt" data-tilt>
+      <div class="card-icon">🕐</div>
+      <h3>13:00 SHARP</h3>
+      <p>Don't be late — potjie waits for no one</p>
+    </div>
+    <div class="card tilt" data-tilt>
+      <div class="card-icon">📍</div>
+      <h3>MY PLACE</h3>
+      <p>Address sent after you RSVP 💌</p>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT TO BRING -->
+<section class="bring" id="bring">
+  <h2 class="section-title">WHAT TO <span class="accent">BRING</span></h2>
+  <p class="bring-sub">Tap the things you're bringing so we don't forget anything — and remember guys, July gets cold!</p>
+  <ul class="bring-list" id="bringList">
+    <li data-item="drinks"><span class="check"></span> Cold drinks</li>
+    <li data-item="gift"><span class="check"></span> Gift</li>
+    <li data-item="jacket"><span class="check"></span> Hoodie/Jacket</li>
+    <li data-item="vibes"><span class="check"></span> Good vibes only ✨</li>
+  </ul>
+</section>
+
+<!-- RSVP -->
+<section class="rsvp" id="rsvp">
+  <h2 class="section-title">RSVP <span class="accent">HERE</span></h2>
+  <form class="rsvp-form" id="rsvpForm" autocomplete="off">
+
+    <div class="field">
+      <label>Your Name</label>
+      <input type="text" id="rsvpName" required maxlength="30" placeholder="Type your name..." />
+    </div>
+
+    <!-- ENTRANCE FEE PICKER -->
+    <div class="field">
+      <label>Entrance fee 🎟️ — pick your contribution</label>
+      <p class="fee-note">Each person brings a bag of chips OR sweets. Max 8 of each — first come first served!</p>
+
+      <div class="fee-options">
+
+        <button type="button" class="fee-btn" id="feeChips" data-type="chips">
+          <span class="fee-emoji">🍟</span>
+          <span class="fee-label">Chips</span>
+          <span class="fee-count" id="chipsCount">0 / 8</span>
+          <span class="fee-bar-wrap"><span class="fee-bar" id="chipsBar"></span></span>
+        </button>
+
+        <button type="button" class="fee-btn" id="feeSweetsBtn" data-type="sweets">
+          <span class="fee-emoji">🍬</span>
+          <span class="fee-label">Sweets</span>
+          <span class="fee-count" id="sweetsCount">0 / 8</span>
+          <span class="fee-bar-wrap"><span class="fee-bar" id="sweetsBar"></span></span>
+        </button>
+
+      </div>
+
+      <div class="fee-selected hidden" id="feeSelected">
+        <span id="feeSelectedText">You're bringing: —</span>
+        <button type="button" class="fee-clear" id="feeClear">change ✕</button>
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary btn-big" id="rsvpBtn">LOCK IT IN 🔒</button>
+    <p class="hint">⏰ RSVP closes 21 July — don't ghost!</p>
+  </form>
+</section>
+
+<!-- TICKET (revealed after RSVP) -->
+<section class="ticket-section hidden" id="ticketSection">
+  <h2 class="section-title">YOUR <span class="accent">TICKET</span> 🎟️</h2>
+  <p class="ticket-sub">Screenshot this & show it at the door</p>
+  <div class="ticket-wrap">
+    <div class="ticket" id="ticket">
+      <div class="ticket-front">
+        <div class="ticket-top">
+          <span class="ticket-label">ADMIT ONE</span>
+          <span class="ticket-code" id="ticketCode">#POTJIE-0000</span>
+        </div>
+        <div class="ticket-name" id="ticketName">GUEST NAME</div>
+        <div class="ticket-meta">
+          <div><b>DATE</b><span>25 JUL · 13:00</span></div>
+          <div><b>STATUS</b><span class="ok">CONFIRMED ✓</span></div>
+          <div><b>BRINGING</b><span id="ticketFee" class="ok">—</span></div>
+          <div><b>ENTRY</b><span class="ok">LOCKED IN ✓</span></div>
+        </div>
+        <div class="ticket-qr" id="ticketQr"></div>
+        <div class="ticket-foot">THE FAMOUS POTJIE · POTJIE '26</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="foot">
+  <p>made with 🔥 & a cast iron pot · POTJIE '26</p>
+  <p class="tiny">psst — there are 15 secrets hidden on this page. can u find them all? 👀</p>
+</footer>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- SECRET PANEL -->
+<div class="secret-panel hidden" id="secretPanel">
+  <div class="secret-inner">
+    <h3>🎊 SECRET UNLOCKED!</h3>
+    <p id="secretMsg">You found one!</p>
+    <div class="secret-progress"><span id="secretCount">0</span> / 15</div>
+    <button class="btn btn-ghost" onclick="document.getElementById('secretPanel').classList.add('hidden')">CLOSE</button>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
